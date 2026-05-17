@@ -3,6 +3,7 @@
   "displayName": "%viewContainer.title%",
   "description": "Auto-record projects, one-click switch. / 自动记录，一键即达。",
   "version": "0.0.1",
+  "icon": "resources/icon.svg",
   "engines": {
     "vscode": "^1.120.0"
   },
@@ -20,7 +21,7 @@
         {
           "id": "project-explorer",
           "title": "%viewContainer.title%",
-          "icon": "resources/icon.svg"
+          "icon": "resources/sidebar.svg"
         }
       ]
     },
@@ -29,7 +30,7 @@
         {
           "id": "project-explorer.projects",
           "name": "%view.projects.name%",
-          "icon": "resources/icon.svg"
+          "icon": "resources/sidebar.svg"
         },
         {
           "id": "project-explorer.recent",
@@ -55,7 +56,7 @@
       {
         "command": "project-explorer.gitClone",
         "title": "%command.gitClone%",
-        "icon": "$(git-clone)"
+        "icon": "$(repo-clone)"
       },
       {
         "command": "project-explorer.addGroup",

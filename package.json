@@ -3,7 +3,7 @@
   "displayName": "%viewContainer.title%",
   "description": "Auto-record projects, one-click switch. / 自动记录，一键即达。",
   "version": "0.0.1",
-  "icon": "resources/icon.svg",
+  "icon": "resources/icon.png",
   "engines": {
     "vscode": "^1.120.0"
   },

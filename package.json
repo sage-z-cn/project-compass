@@ -107,8 +107,8 @@
         "title": "%command.renameProject%"
       },
       {
-        "command": "project-explorer.deleteProject",
-        "title": "%command.deleteProject%"
+        "command": "project-explorer.removeProject",
+        "title": "%command.removeProject%"
       },
       {
         "command": "project-explorer.renameGroup",

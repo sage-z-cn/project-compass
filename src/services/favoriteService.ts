@@ -62,7 +62,7 @@ export class FavoriteService {
       .then(() => item);
   }
 
-  delete(id: string): Thenable<void> {
+  remove(id: string): Thenable<void> {
     return this.storage.updateData((data) => ({
       ...data,
       favoriteProjects: data.favoriteProjects.filter((p) => p.id !== id),

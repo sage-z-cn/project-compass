@@ -18,7 +18,7 @@
   "command.addFavorite": "Add to Favorites",
   "command.removeFavorite": "Remove from Favorites",
   "command.renameProject": "Rename",
-  "command.deleteProject": "Remove",
+  "command.removeProject": "Remove",
   "command.renameGroup": "Rename Group",
   "command.deleteGroup": "Delete Group",
   "config.title": "Project Explorer",

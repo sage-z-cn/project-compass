@@ -32,7 +32,7 @@ export function registerProjectCommands(
   register("addFavorite", addFavoriteCmd);
   register("removeFavorite", removeFavoriteCmd);
   register("renameProject", renameProjectCmd);
-  register("deleteProject", deleteProjectCmd);
+  register("removeProject", removeProjectCmd);
   async function openProjectCmd() {
     const projects = projectService.getAll().filter((p) => p.isValid);
     await pickAndOpenProject(projects);
@@ -161,7 +161,7 @@ export function registerProjectCommands(
 
   async function removeFavoriteCmd(node: TreeNode) {
     if (node?.type !== "project" || !node.item) {return;}
-    await favoriteService.delete(node.item.id);
+    await favoriteService.remove(node.item.id);
     refreshAll();
   }
 
@@ -177,9 +177,9 @@ export function registerProjectCommands(
     refreshAll();
   }
 
-  async function deleteProjectCmd(node: TreeNode) {
+  async function removeProjectCmd(node: TreeNode) {
     if (node?.type !== "project" || !node.item) {return;}
-    await projectService.deleteProject(node.item.id);
+    await projectService.removeProject(node.item.id);
     refreshAll();
   }
 

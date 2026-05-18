@@ -18,7 +18,7 @@
   "command.addFavorite": "收藏",
   "command.removeFavorite": "取消收藏",
   "command.renameProject": "重命名",
-  "command.deleteProject": "移除",
+  "command.removeProject": "移除",
   "command.renameGroup": "重命名分组",
   "command.deleteGroup": "删除分组",
   "config.title": "项目管理器",

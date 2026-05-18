@@ -243,9 +243,8 @@ const MENU_PROJECT = [
   { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))} },
   { action: "revealInExplorer", label: ${JSON.stringify(vscode.l10n.t("Reveal in File Explorer"))} },
   { sep: true },
-  { action: "removeFavorite", label: ${JSON.stringify(vscode.l10n.t("Remove from Favorites"))} },
   { action: "rename", label: ${JSON.stringify(vscode.l10n.t("Rename"))} },
-  { action: "delete", label: ${JSON.stringify(vscode.l10n.t("Delete"))} },
+  { action: "removeFavorite", label: ${JSON.stringify(vscode.l10n.t("Remove from Favorites"))} },
 ];
 const MENU_GROUP = [
   { action: "renameGroup", label: ${JSON.stringify(vscode.l10n.t("Rename Group"))} },
@@ -684,7 +683,7 @@ vscode.postMessage({ type: "ready" });
         vscode.commands.executeCommand("revealFileInOS", vscode.Uri.file(project.path));
         break;
       case "removeFavorite":
-        await this.favoriteService.delete(id);
+        await this.favoriteService.remove(id);
         break;
       case "rename": {
         const newName = await vscode.window.showInputBox({
@@ -697,11 +696,11 @@ vscode.postMessage({ type: "ready" });
         }
         break;
       }
-      case "delete": {
-        await this.favoriteService.delete(id);
+      case "remove": {
+        await this.favoriteService.remove(id);
         const recentProject = this.projectService.getByPath(project.path);
         if (recentProject) {
-          await this.projectService.deleteProject(recentProject.id);
+          await this.projectService.removeProject(recentProject.id);
         }
         break;
       }

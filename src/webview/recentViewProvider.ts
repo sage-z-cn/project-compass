@@ -184,7 +184,7 @@ const MENU = {
     { sep: true },
     { action: "addFavorite", label: ${JSON.stringify(vscode.l10n.t("Add to Favorites"))} },
     { action: "rename", label: ${JSON.stringify(vscode.l10n.t("Rename"))} },
-    { action: "delete", label: ${JSON.stringify(vscode.l10n.t("Delete"))} },
+    { action: "remove", label: ${JSON.stringify(vscode.l10n.t("Remove"))} },
   ],
 };
 
@@ -346,11 +346,11 @@ vscode.postMessage({ type: "ready" });
         }
         break;
       }
-      case "delete": {
-        await this.projectService.deleteProject(id);
+      case "remove": {
+        await this.projectService.removeProject(id);
         const favProject = this.favoriteService.getByPath(project.path);
         if (favProject) {
-          await this.favoriteService.delete(favProject.id);
+          await this.favoriteService.remove(favProject.id);
         }
         break;
       }

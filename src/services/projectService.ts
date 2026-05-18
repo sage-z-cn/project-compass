@@ -103,7 +103,7 @@ export class ProjectService {
       .then(() => project);
   }
 
-  deleteProject(id: string): Thenable<void> {
+  removeProject(id: string): Thenable<void> {
     return this.storage.updateData((data) => ({
       ...data,
       recentProjects: data.recentProjects.filter((p) => p.id !== id),

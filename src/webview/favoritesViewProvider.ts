@@ -14,7 +14,7 @@ interface TreeNodeDto {
   path?: string;
   isValid?: boolean;
   icon?: string;
-  fileIcon?: string;
+  iconSource?: "codicon" | "devicon";
   children?: TreeNodeDto[];
 }
 
@@ -56,7 +56,7 @@ export class FavoritesViewProvider extends BaseViewProvider {
           path: p.path,
           isValid: p.isValid,
           icon: iconInfo.icon,
-          fileIcon: iconInfo.fileIcon,
+          iconSource: iconInfo.iconSource,
         });
       }
       return { id: g.id, type: "group", name: g.name, children };
@@ -74,7 +74,7 @@ export class FavoritesViewProvider extends BaseViewProvider {
         path: p.path,
         isValid: p.isValid,
         icon: iconInfo.icon,
-        fileIcon: iconInfo.fileIcon,
+        iconSource: iconInfo.iconSource,
       });
     }
     return result;
@@ -85,12 +85,16 @@ export class FavoritesViewProvider extends BaseViewProvider {
     const codiconCss = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')
     );
+    const deviconCss = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, 'node_modules', 'devicon', 'devicon.min.css')
+    );
     return `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; font-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 <link href="${codiconCss}" rel="stylesheet" nonce="${nonce}">
+<link href="${deviconCss}" rel="stylesheet" nonce="${nonce}">
 <style nonce="${nonce}">
   :root { --item-height: 22px; --indent: 0px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -136,6 +140,7 @@ export class FavoritesViewProvider extends BaseViewProvider {
   }
   .icon.folder { color: var(--vscode-icon.foreground); }
   .icon.project { color: var(--vscode-icon.foreground); }
+  .icon.devicon { font-size: 16px; }
   .label { overflow: hidden; text-overflow: ellipsis; flex: 1; }
   .children { overflow: hidden; }
   .children.collapsed { display: none; }
@@ -236,8 +241,11 @@ function renderNodes(nodes, depth) {
     const isGroup = node.type === "group";
     const isExpanded = expanded.has(node.id);
     const indentPx = depth * 8 + (isGroup ? 0 : 16);
-    const iconClass = isGroup ? "folder" : "project";
-    const iconCodicon = isGroup ? (isExpanded ? "codicon codicon-folder-opened" : "codicon codicon-folder") : "codicon codicon-" + (node.icon || "vscode");
+    const useDevicon = !isGroup && node.iconSource === "devicon";
+    const iconClass = isGroup ? "folder" : (useDevicon ? "project devicon" : "project");
+    const iconContent = isGroup
+      ? (isExpanded ? "codicon codicon-folder-opened" : "codicon codicon-folder")
+      : (useDevicon ? node.icon : "codicon codicon-" + (node.icon || "vscode"));
     const invalidClass = !isGroup && !node.isValid ? " invalid" : "";
     const activeClass = node.id === activeId ? " active" : "";
 
@@ -246,7 +254,7 @@ function renderNodes(nodes, depth) {
       const chevronCodicon = isExpanded ? "codicon codicon-chevron-down" : "codicon codicon-chevron-right";
       html += '<span class="chevron" data-toggle="' + node.id + '"><i class="' + chevronCodicon + '"></i></span>';
     }
-    html += '<span class="icon ' + iconClass + '"><i class="' + iconCodicon + '"></i></span>';
+    html += '<span class="icon ' + iconClass + '"><i class="' + iconContent + '"></i></span>';
     html += '<span class="label">' + esc(node.name) + '</span>';
     html += '</div>';
 
@@ -309,9 +317,15 @@ function showMenu(x, y, type) {
     : '<div class="menu-item" data-action="' + i.action + '">' + esc(i.label) + '</div>'
   ).join("");
   menu.style.display = "block";
-  const rect = document.body.getBoundingClientRect();
-  if (x + 220 > rect.right) { x = rect.right - 220; }
-  if (y + menu.offsetHeight > rect.bottom) { y = rect.bottom - menu.offsetHeight; }
+  const menuW = menu.offsetWidth;
+  const menuH = menu.offsetHeight;
+  const pad = 4;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (x + menuW > vw - pad) { x = vw - menuW - pad; }
+  if (y + menuH > vh - pad) { y = vh - menuH - pad; }
+  if (x < pad) { x = pad; }
+  if (y < pad) { y = pad; }
   menu.style.left = x + "px";
   menu.style.top = y + "px";
 }

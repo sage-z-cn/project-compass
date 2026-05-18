@@ -324,6 +324,7 @@
     "vite": "^8.0.13"
   },
   "dependencies": {
-    "@vscode/codicons": "^0.0.45"
+    "@vscode/codicons": "^0.0.45",
+    "devicon": "^2.17.0"
   }
 }

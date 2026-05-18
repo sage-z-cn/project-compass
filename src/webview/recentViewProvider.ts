@@ -13,7 +13,7 @@ interface RecentItemDto {
   isValid: boolean;
   timeLabel: string;
   icon: string;
-  fileIcon?: string;
+  iconSource: "codicon" | "devicon";
 }
 
 function formatRelativeTime(timestamp: number): string {
@@ -52,7 +52,7 @@ export class RecentViewProvider extends BaseViewProvider {
           isValid: p.isValid,
           timeLabel: p.isValid ? formatRelativeTime(p.lastOpenedAt) : vscode.l10n.t("Invalid"),
           icon: iconInfo.icon,
-          fileIcon: iconInfo.fileIcon,
+          iconSource: iconInfo.iconSource,
         };
       }
     );
@@ -64,12 +64,16 @@ export class RecentViewProvider extends BaseViewProvider {
     const codiconCss = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')
     );
+    const deviconCss = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, 'node_modules', 'devicon', 'devicon.min.css')
+    );
     return `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; font-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 <link href="${codiconCss}" rel="stylesheet" nonce="${nonce}">
+<link href="${deviconCss}" rel="stylesheet" nonce="${nonce}">
 <style nonce="${nonce}">
   :root { --item-height: 22px; --indent: 8px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -104,6 +108,7 @@ export class RecentViewProvider extends BaseViewProvider {
     font-size: 14px;
   }
   .icon.vscode { color: var(--vscode-icon.foreground); }
+  .icon.devicon { font-size: 16px; }
   .content {
     flex: 1;
     display: flex;
@@ -184,10 +189,11 @@ function render() {
     return;
   }
   list.innerHTML = items.map(p => {
-    const iconClass = 'codicon codicon-' + p.icon;
+    const iconClass = p.iconSource === "devicon" ? p.icon : 'codicon codicon-' + p.icon;
+    const iconStyle = p.iconSource === "devicon" ? 'icon devicon' : 'icon vscode';
     return '<div class="item' + (p.isValid ? '' : ' invalid') + (p.id === activeId ? ' active' : '') +
     '" data-id="' + p.id + '">' +
-    '<span class="icon vscode"><i class="' + iconClass + '"></i></span>' +
+    '<span class="' + iconStyle + '"><i class="' + iconClass + '"></i></span>' +
     '<div class="content"><span class="label">' + esc(p.name) + '</span>' +
     '<span class="desc">' + esc(p.timeLabel) + '</span></div></div>';
   }).join("");
@@ -233,9 +239,15 @@ function showMenu(x, y, type) {
     : '<div class="menu-item" data-action="' + i.action + '">' + esc(i.label) + '</div>'
   ).join("");
   menu.style.display = "block";
-  const rect = document.body.getBoundingClientRect();
-  if (x + 200 > rect.right) { x = rect.right - 200; }
-  if (y + menu.offsetHeight > rect.bottom) { y = rect.bottom - menu.offsetHeight; }
+  const menuW = menu.offsetWidth;
+  const menuH = menu.offsetHeight;
+  const pad = 4;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (x + menuW > vw - pad) { x = vw - menuW - pad; }
+  if (y + menuH > vh - pad) { y = vh - menuH - pad; }
+  if (x < pad) { x = pad; }
+  if (y < pad) { y = pad; }
   menu.style.left = x + "px";
   menu.style.top = y + "px";
 }

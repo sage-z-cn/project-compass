@@ -87,11 +87,10 @@ export class RecentViewProvider extends BaseViewProvider {
   }
   .item {
     display: flex;
-    align-items: center;
-    height: var(--item-height);
-    padding: 0 8px 0 16px;
+    align-items: flex-start;
+    min-height: var(--item-height);
+    padding: 4px 8px 4px 16px;
     cursor: pointer;
-    white-space: nowrap;
     overflow: hidden;
   }
   .item:hover { background: var(--vscode-list-hoverBackground); }
@@ -106,23 +105,39 @@ export class RecentViewProvider extends BaseViewProvider {
     align-items: center;
     justify-content: center;
     font-size: 14px;
+    align-self: center;
   }
   .icon.vscode { color: var(--vscode-icon.foreground); }
   .icon.devicon { font-size: 16px; }
   .content {
     flex: 1;
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+    align-self: flex-start;
+  }
+  .label-row {
+    display: flex;
     align-items: baseline;
     gap: 6px;
-    overflow: hidden;
   }
-  .label { overflow: hidden; text-overflow: ellipsis; }
+  .label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+  .path {
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.85em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .desc {
     flex-shrink: 0;
     color: var(--vscode-descriptionForeground);
     font-size: 0.9em;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-left: auto;
+    text-align: right;
   }
   .empty {
     padding: 8px 16px;
@@ -194,8 +209,9 @@ function render() {
     return '<div class="item' + (p.isValid ? '' : ' invalid') + (p.id === activeId ? ' active' : '') +
     '" data-id="' + p.id + '">' +
     '<span class="' + iconStyle + '"><i class="' + iconClass + '"></i></span>' +
-    '<div class="content"><span class="label">' + esc(p.name) + '</span>' +
-    '<span class="desc">' + esc(p.timeLabel) + '</span></div></div>';
+    '<div class="content"><div class="label-row"><span class="label">' + esc(p.name) + '</span>' +
+    '<span class="desc">' + esc(p.timeLabel) + '</span></div>' +
+    '<span class="path">' + esc(p.path) + '</span></div></div>';
   }).join("");
 }
 

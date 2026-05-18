@@ -108,11 +108,10 @@ export class FavoritesViewProvider extends BaseViewProvider {
   }
   .tree-node {
     display: flex;
-    align-items: center;
-    height: var(--item-height);
-    padding: 0 8px 0 0;
+    align-items: flex-start;
+    min-height: var(--item-height);
+    padding: 4px 8px 4px 0;
     cursor: pointer;
-    white-space: nowrap;
     overflow: hidden;
     position: relative;
   }
@@ -137,11 +136,27 @@ export class FavoritesViewProvider extends BaseViewProvider {
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
   }
   .icon.folder { color: var(--vscode-icon.foreground); }
   .icon.project { color: var(--vscode-icon.foreground); }
   .icon.devicon { font-size: 16px; }
-  .label { overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; font-weight: 600; }
+  .tree-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+    align-self: flex-start;
+  }
+  .tree-path {
+    color: var(--vscode-descriptionForeground);
+    font-size: 0.85em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .children { overflow: hidden; }
   .children.collapsed { display: none; }
   .drop-indicator {
@@ -255,8 +270,11 @@ function renderNodes(nodes, depth) {
       html += '<span class="chevron" data-toggle="' + node.id + '"><i class="' + chevronCodicon + '"></i></span>';
     }
     html += '<span class="icon ' + iconClass + '"><i class="' + iconContent + '"></i></span>';
-    html += '<span class="label">' + esc(node.name) + '</span>';
-    html += '</div>';
+    html += '<div class="tree-content"><span class="label">' + esc(node.name) + '</span>';
+    if (!isGroup && node.path) {
+      html += '<span class="tree-path">' + esc(node.path) + '</span>';
+    }
+    html += '</div></div>';
 
     if (isGroup && node.children) {
       html += '<div class="children' + (isExpanded ? '' : ' collapsed') + '" data-parent="' + node.id + '">';

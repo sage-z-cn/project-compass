@@ -1,4 +1,20 @@
-export type ProjectType = "python" | "java" | "javascript" | "unknown";
+export type ProjectType =
+  | "python"
+  | "java"
+  | "javascript"
+  | "typescript"
+  | "react"
+  | "vue"
+  | "cpp"
+  | "csharp"
+  | "go"
+  | "rust"
+  | "php"
+  | "ruby"
+  | "swift"
+  | "kotlin"
+  | "dart"
+  | "unknown";
 
 export interface ProjectItem {
   id: string;

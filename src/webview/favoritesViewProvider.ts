@@ -698,13 +698,10 @@ vscode.postMessage({ type: "ready" });
         break;
       }
       case "delete": {
-        const confirm = await vscode.window.showWarningMessage(
-          vscode.l10n.t("Delete project '{0}'?", project.name),
-          { modal: true },
-          vscode.l10n.t("Delete")
-        );
-        if (confirm === vscode.l10n.t("Delete")) {
-          await this.projectService.deleteProject(id);
+        await this.favoriteService.delete(id);
+        const recentProject = this.projectService.getByPath(project.path);
+        if (recentProject) {
+          await this.projectService.deleteProject(recentProject.id);
         }
         break;
       }
@@ -740,14 +737,7 @@ vscode.postMessage({ type: "ready" });
           if (!act) {return;}
           await this.groupService.deleteGroup(id, act === vscode.l10n.t("Move to parent"));
         } else {
-          const confirm = await vscode.window.showWarningMessage(
-            vscode.l10n.t("Delete group '{0}'?", group.name),
-            { modal: true },
-            vscode.l10n.t("Delete")
-          );
-          if (confirm === vscode.l10n.t("Delete")) {
-            await this.groupService.deleteGroup(id, true);
-          }
+          await this.groupService.deleteGroup(id, true);
         }
         break;
       }

@@ -63,12 +63,12 @@ export class GroupService {
       const descendantIds = this.getDescendantIds(id, data.groups);
       const newParentId = group.parentId || undefined;
 
-      let projects = data.projects;
+      let favoriteProjects = [...data.favoriteProjects];
       let groups = data.groups;
 
       if (moveChildren) {
         const allIds = new Set([id, ...descendantIds]);
-        projects = projects.map((p) =>
+        favoriteProjects = favoriteProjects.map((p) =>
           allIds.has(p.groupId || "") ? { ...p, groupId: newParentId } : p
         );
         groups = groups.map((g) =>
@@ -76,13 +76,13 @@ export class GroupService {
         );
       } else {
         const allIds = new Set([id, ...descendantIds]);
-        projects = projects.filter((p) => !p.groupId || !allIds.has(p.groupId));
+        favoriteProjects = favoriteProjects.filter((p) => !p.groupId || !allIds.has(p.groupId));
         groups = groups.filter((g) => !allIds.has(g.id));
       }
 
       groups = groups.filter((g) => g.id !== id);
 
-      return { ...data, projects, groups };
+      return { ...data, favoriteProjects, groups };
     });
   }
 

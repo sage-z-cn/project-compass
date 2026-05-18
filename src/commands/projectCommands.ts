@@ -179,12 +179,6 @@ export function registerProjectCommands(
 
   async function deleteProjectCmd(node: TreeNode) {
     if (node?.type !== "project" || !node.item) {return;}
-    const confirm = await vscode.window.showWarningMessage(
-      vscode.l10n.t("Delete project '{0}'?", node.item.name),
-      { modal: true },
-      vscode.l10n.t("Delete")
-    );
-    if (confirm !== vscode.l10n.t("Delete")) {return;}
     await projectService.deleteProject(node.item.id);
     refreshAll();
   }

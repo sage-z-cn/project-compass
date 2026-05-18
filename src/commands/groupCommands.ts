@@ -68,12 +68,6 @@ export function registerGroupCommands(
       if (!action) {return;}
       await groupService.deleteGroup(node.item.id, action === vscode.l10n.t("Move to parent"));
     } else {
-      const confirm = await vscode.window.showWarningMessage(
-        vscode.l10n.t("Delete group '{0}'?", node.item.name),
-        { modal: true },
-        vscode.l10n.t("Delete")
-      );
-      if (confirm !== vscode.l10n.t("Delete")) {return;}
       await groupService.deleteGroup(node.item.id, true);
     }
 
@@ -85,30 +79,16 @@ export function registerGroupCommands(
   }
 
   async function cleanInvalidCmd() {
-    const invalid = [
-      ...projectService.getAll().filter((p) => !p.isValid),
-      ...favoriteService.getAll().filter((p) => !p.isValid),
-    ];
-    if (invalid.length === 0) {
+    const removedRecent = await projectService.cleanInvalid();
+    // TODO: clean invalid from favorites too
+
+    if (removedRecent === 0) {
       vscode.window.showInformationMessage(
         vscode.l10n.t("No invalid projects found.")
       );
       return;
     }
 
-    const confirm = await vscode.window.showWarningMessage(
-      vscode.l10n.t(
-        "Found {0} invalid project(s). Remove them all?",
-        String(invalid.length)
-      ),
-      { modal: true },
-      vscode.l10n.t("Remove All")
-    );
-
-    if (confirm !== vscode.l10n.t("Remove All")) {return;}
-
-    const removedRecent = await projectService.cleanInvalid();
-    // TODO: clean invalid from favorites too
     vscode.window.showInformationMessage(
       vscode.l10n.t("Removed {0} invalid project(s).", String(removedRecent))
     );

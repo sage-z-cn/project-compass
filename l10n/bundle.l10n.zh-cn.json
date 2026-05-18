@@ -15,7 +15,7 @@
   "Git clone failed: {0}": "Git 克隆失败：{0}",
   "Open": "打开",
   "Delete project '{0}'?": "移除项目 '{0}'？",
-  "Delete": "删除",
+  "Delete": "移除",
   "Rename project": "重命名项目",
   "Enter group name": "输入分组名称",
   "Rename group": "重命名分组",

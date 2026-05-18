@@ -347,13 +347,10 @@ vscode.postMessage({ type: "ready" });
         break;
       }
       case "delete": {
-        const confirm = await vscode.window.showWarningMessage(
-          vscode.l10n.t("Delete project '{0}'?", project.name),
-          { modal: true },
-          vscode.l10n.t("Delete")
-        );
-        if (confirm === vscode.l10n.t("Delete")) {
-          await this.projectService.deleteProject(id);
+        await this.projectService.deleteProject(id);
+        const favProject = this.favoriteService.getByPath(project.path);
+        if (favProject) {
+          await this.favoriteService.delete(favProject.id);
         }
         break;
       }

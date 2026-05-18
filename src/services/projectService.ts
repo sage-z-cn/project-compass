@@ -119,19 +119,15 @@ export class ProjectService {
     }));
   }
 
-  checkValidity(limit: number): Thenable<ProjectItem[]> {
+  checkValidity(): Thenable<ProjectItem[]> {
     const data = this.storage.getData();
-    const recent = [...data.recentProjects]
-      .sort((a, b) => b.lastOpenedAt - a.lastOpenedAt)
-      .slice(0, limit);
 
     const cache = new Map<string, boolean>();
-    for (const p of recent) {
-      const valid = isPathValid(p.path);
-      cache.set(p.id, valid);
+    for (const p of data.recentProjects) {
+      cache.set(p.id, isPathValid(p.path));
     }
 
-    const changed = recent.filter((p) => cache.get(p.id) !== p.isValid);
+    const changed = data.recentProjects.filter((p) => cache.get(p.id) !== p.isValid);
     if (changed.length === 0) {return Promise.resolve([]);}
 
     return this.storage
@@ -150,7 +146,9 @@ export class ProjectService {
     return this.storage
       .updateData((data) => ({
         ...data,
-        recentProjects: data.recentProjects.filter((p) => p.isValid),
+        recentProjects: data.recentProjects
+          .map((p) => ({ ...p, isValid: isPathValid(p.path) }))
+          .filter((p) => p.isValid),
       }))
       .then(() => before - this.getAll().length);
   }

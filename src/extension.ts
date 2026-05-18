@@ -56,10 +56,6 @@ export function activate(context: vscode.ExtensionContext) {
   registerGroupCommands(context, groupService, favoriteService, projectService, refreshAll, favoritesView);
 
   projectService.recordCurrentWorkspace();
-
-  const config = vscode.workspace.getConfiguration("projectExplorer");
-  const limit = config.get<number>("recentProjectsLimit", 20);
-  projectService.checkValidity(limit);
 }
 
 export function deactivate() {}

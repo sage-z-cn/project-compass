@@ -106,6 +106,7 @@ export class FavoritesViewProvider extends BaseViewProvider {
     padding: 4px 0;
     user-select: none;
   }
+  #tree { min-height: calc(100vh - 8px); }
   .tree-node {
     display: flex;
     align-items: flex-start;
@@ -403,13 +404,40 @@ document.getElementById("tree").addEventListener("dragend", (e) => {
   if (node) { node.style.opacity = ""; }
   clearIndicator();
   dragData = null;
+  lastDropTarget = null;
 });
 
 document.getElementById("tree").addEventListener("dragover", (e) => {
   e.preventDefault();
   if (!dragData) {return;}
   const node = e.target.closest(".tree-node");
-  if (!node) { clearIndicator(); return; }
+  if (!node) {
+    // 鼠标不在任何节点上，检查是否在根级别列表底部区域
+    const treeContainer = document.getElementById("tree");
+    // 只查找根级别节点（#tree 的直接子元素中的 .tree-node）
+    const rootNodes = Array.from(treeContainer.children).filter(el => el.classList.contains("tree-node"));
+    
+    if (rootNodes.length > 0) {
+      const lastRootNode = rootNodes[rootNodes.length - 1];
+      const lastRect = lastRootNode.getBoundingClientRect();
+      
+      // 如果鼠标在最后一个根节点下方
+      if (e.clientY >= lastRect.bottom) {
+        clearIndicator();
+        currentOverNode = lastRootNode;
+        lastDropTarget = { id: lastRootNode.dataset.id, type: lastRootNode.dataset.type, position: "after" };
+
+        const ind = document.createElement("div");
+        ind.className = "drop-indicator after";
+        lastRootNode.appendChild(ind);
+        currentIndicator = ind;
+        return;
+      }
+    }
+
+    clearIndicator();
+    return;
+  }
 
   // Don't allow dropping on self
   if (node.dataset.id === dragData.id) { clearIndicator(); return; }
@@ -554,7 +582,9 @@ vscode.postMessage({ type: "ready" });
       } else if (position === "after") {
         const targetProject = this.favoriteService.getById(target.id);
         if (targetProject) {
-          const siblings = this.favoriteService.getByGroup(targetProject.groupId);
+          const siblings = targetProject.groupId 
+            ? this.favoriteService.getByGroup(targetProject.groupId)
+            : this.favoriteService.getUngrouped();
           const idx = siblings.findIndex((p) => p.id === target.id);
           if (idx >= 0 && idx < siblings.length - 1) {
             await this.favoriteService.reorderAfter(projectId, siblings[idx + 1].id);
@@ -594,12 +624,21 @@ vscode.postMessage({ type: "ready" });
           if (position === "before") {
             await this.groupService.reorderAfter(groupId, target.id);
           } else {
-            const siblings = this.groupService.getChildren(targetGroup.parentId);
+            const siblings = targetGroup.parentId 
+              ? this.groupService.getChildren(targetGroup.parentId)
+              : this.groupService.getRootGroups();
             const idx = siblings.findIndex((g) => g.id === target.id);
             if (idx >= 0 && idx < siblings.length - 1) {
               await this.groupService.reorderAfter(groupId, siblings[idx + 1].id);
             } else {
               await this.groupService.updateParent(groupId, targetGroup.parentId || undefined);
+              const orderSiblings = targetGroup.parentId
+                ? this.groupService.getChildren(targetGroup.parentId)
+                : this.groupService.getRootGroups();
+              const maxOrder = orderSiblings
+                .filter(g => g.id !== groupId)
+                .reduce((max, g) => Math.max(max, g.order), -1);
+              await this.groupService.updateOrder(groupId, maxOrder + 1);
             }
           }
         } else {
@@ -611,6 +650,9 @@ vscode.postMessage({ type: "ready" });
       } else {
         // Dropped near a project at root level
         await this.groupService.updateParent(groupId, undefined);
+        const rootGroups = this.groupService.getRootGroups().filter(g => g.id !== groupId);
+        const maxOrder = rootGroups.reduce((max, g) => Math.max(max, g.order), -1);
+        await this.groupService.updateOrder(groupId, maxOrder + 1);
       }
     }
   }

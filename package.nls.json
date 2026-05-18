@@ -9,6 +9,7 @@
   "command.gitClone": "Git Clone",
   "command.addGroup": "New Group",
   "command.toggleCollapse": "Toggle Collapse",
+  "command.addCurrentToFavorites": "Add Current Project to Favorites",
   "command.cleanInvalid": "Clean Invalid Projects",
   "command.openSettings": "Settings",
   "command.openInNewWindow": "Open in New Window",
@@ -23,6 +24,7 @@
   "config.title": "Project Explorer",
   "config.recentProjectsLimit": "Maximum number of recent projects to display.",
   "config.openProjectMode": "How to open projects: 'ask' (prompt each time), 'currentWindow', or 'newWindow'.",
+  "config.openMode": "Click behavior for opening a project (single click, double click, or follow IDE).",
 
   "group.recent": "Recent Projects"
 }

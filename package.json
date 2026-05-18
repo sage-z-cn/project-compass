@@ -68,6 +68,11 @@
         "icon": "$(collapse-all)"
       },
       {
+        "command": "project-explorer.addCurrentToFavorites",
+        "title": "%command.addCurrentToFavorites%",
+        "icon": "$(star-full)"
+      },
+      {
         "command": "project-explorer.cleanInvalid",
         "title": "%command.cleanInvalid%",
         "icon": "$(trash)"
@@ -187,6 +192,11 @@
           "group": "navigation@2"
         },
         {
+          "command": "project-explorer.addCurrentToFavorites",
+          "when": "view == project-explorer.favorites",
+          "group": "navigation@0"
+        },
+        {
           "command": "project-explorer.cleanInvalid",
           "when": "view == project-explorer.recent",
           "group": "overflow@1"
@@ -285,7 +295,7 @@
           ],
           "description": "%config.openProjectMode%"
         },
-        "projectExplorer.clickToOpen": {
+        "projectExplorer.openMode": {
           "type": "string",
           "default": "followIDE",
           "enum": [
@@ -298,7 +308,7 @@
             "Double click to open",
             "Follow IDE setting (workbench.list.openMode)"
           ],
-          "description": "%config.clickToOpen%"
+          "description": "%config.openMode%"
         }
       }
     }

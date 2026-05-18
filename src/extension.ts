@@ -34,6 +34,14 @@ export function activate(context: vscode.ExtensionContext) {
   storage.onDidChange(() => refreshAll());
 
   context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration("projectExplorer.openMode") || e.affectsConfiguration("workbench.list.openMode")) {
+        refreshAll();
+      }
+    })
+  );
+
+  context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       "project-explorer.recent",
       recentView

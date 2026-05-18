@@ -27,6 +27,7 @@ export function registerGroupCommands(
   register("toggleCollapse", toggleCollapseCmd);
   register("cleanInvalid", cleanInvalidCmd);
   register("openSettings", openSettingsCmd);
+  register("addCurrentToFavorites", addCurrentToFavoritesCmd);
 
   async function addGroupCmd() {
     const name = await vscode.window.showInputBox({
@@ -119,5 +120,15 @@ export function registerGroupCommands(
       "workbench.action.openSettings",
       "projectExplorer"
     );
+  }
+
+  async function addCurrentToFavoritesCmd() {
+    const folders = vscode.workspace.workspaceFolders;
+    if (!folders || folders.length === 0) {
+      return;
+    }
+    const folder = folders[0];
+    await favoriteService.add({ name: folder.name, path: folder.uri.fsPath });
+    refreshAll();
   }
 }

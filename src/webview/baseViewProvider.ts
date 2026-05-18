@@ -36,7 +36,7 @@ export abstract class BaseViewProvider implements vscode.WebviewViewProvider {
 
   protected resolveClickMode(): "singleClick" | "doubleClick" {
     const config = vscode.workspace.getConfiguration("projectExplorer");
-    let mode = config.get<string>("clickToOpen", "followIDE") as ClickMode;
+    let mode = config.get<string>("openMode", "followIDE") as ClickMode;
     if (mode === "followIDE") {
       const ideMode = vscode.workspace
         .getConfiguration("workbench.list")

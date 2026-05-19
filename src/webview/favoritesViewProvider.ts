@@ -260,6 +260,7 @@ const MENU_PROJECT = [
   { action: "removeFavorite", label: ${JSON.stringify(vscode.l10n.t("Remove from Favorites"))}, icon: "close" },
 ];
 const MENU_GROUP = [
+  { action: "addSubGroup", label: ${JSON.stringify(vscode.l10n.t("Create Sub-group"))}, icon: "new-folder" },
   { action: "renameGroup", label: ${JSON.stringify(vscode.l10n.t("Rename Group"))}, icon: "edit" },
   { action: "deleteGroup", label: ${JSON.stringify(vscode.l10n.t("Delete Group"))}, icon: "trash" },
 ];
@@ -820,6 +821,15 @@ vscode.postMessage({ type: "ready" });
 
   private async handleGroupAction(id: string, action: string, skipConfirm = false) {
     switch (action) {
+      case "addSubGroup": {
+        const name = await vscode.window.showInputBox({
+          prompt: vscode.l10n.t("Enter sub-group name"),
+        });
+        if (name) {
+          await this.groupService.addGroup(name, id);
+        }
+        break;
+      }
       case "renameGroup": {
         if (skipConfirm) {return;}
         const group = this.groupService.getById(id);

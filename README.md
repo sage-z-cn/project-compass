@@ -1,11 +1,11 @@
-<div align="center"><img src="resources/icon.png" width="128" height="128" alt="Project Compass"></div>
+<div align="center"><img src="https://raw.githubusercontent.com/sage-z-cn/project-compass/master/resources/icon.png" width="128" height="128" alt="Project Compass"></div>
 
 <h1 align="center">Project Compass</h1>
 
 <p align="center">Auto-record projects, one-click switch.</p>
 
 <p align="center">
-  <a href="https://github.com/sage-z-cn/project-compass"><img src="https://img.shields.io/github/stars/sage-z-cn/project-compass" alt="GitHub Stars"></a>
+  <a href="https://github.com/sage-z-cn/project-compass.git"><img src="https://img.shields.io/github/stars/sage-z-cn/project-compass" alt="GitHub Stars"></a>
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
 ---
 
 <p align="center">
-  <img src="screenshot/screenshot-en.png" alt="Project Compass Sidebar">
+  <img src="https://raw.githubusercontent.com/sage-z-cn/project-compass/master/screenshot/screenshot-en.png" alt="Project Compass Sidebar">
 </p>
 
 ## Features

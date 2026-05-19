@@ -1,4 +1,4 @@
-<div align="center"><img src="resources/icon.png" width="128" height="128" alt="Project Compass"></div>
+<div align="center"><img src="https://raw.githubusercontent.com/sage-z-cn/project-compass/master/resources/icon.png" width="128" height="128" alt="Project Compass"></div>
 
 <h1 align="center">Project Compass</h1>
 
@@ -16,7 +16,7 @@
 ---
 
 <p align="center">
-  <img src="screenshot/screenshot-zh.png" alt="Project Compass 侧边栏">
+  <img src="https://raw.githubusercontent.com/sage-z-cn/project-compass/master/screenshot/screenshot-zh.png" alt="Project Compass 侧边栏">
 </p>
 
 ## 功能特性

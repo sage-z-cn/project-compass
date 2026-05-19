@@ -217,7 +217,7 @@ window.addEventListener("message", (e) => {
 function render() {
   const list = document.getElementById("list");
   if (items.length === 0) {
-    list.innerHTML = '<div class="empty">${JSON.stringify(vscode.l10n.t("No recent projects"))}</div>';
+    list.innerHTML = '<div class="empty">' + esc(${JSON.stringify(vscode.l10n.t("No recent projects"))}) + '</div>';
     return;
   }
   list.innerHTML = items.map(p => {

@@ -295,7 +295,7 @@ window.addEventListener("message", (e) => {
 function render() {
   const container = document.getElementById("tree");
   if (!tree || tree.length === 0) {
-    container.innerHTML = '<div class="empty">${JSON.stringify(vscode.l10n.t("No favorites yet"))}</div>';
+    container.innerHTML = '<div class="empty">' + esc(${JSON.stringify(vscode.l10n.t("No favorites yet"))}) + '</div>';
     return;
   }
   container.innerHTML = renderNodes(tree, 0);

@@ -190,7 +190,7 @@
           "when": "false"
         },
         {
-          "command": "project-compass.deleteProject",
+          "command": "project-compass.removeProject",
           "when": "false"
         },
         {
@@ -286,7 +286,7 @@
           "group": "2_manage@2"
         },
         {
-          "command": "project-compass.deleteProject",
+          "command": "project-compass.removeProject",
           "when": "viewItem =~ /^(project|project-invalid|project-fav|project-fav-invalid|favorite-project|favorite-project-invalid|recent-project|recent-project-invalid)$/",
           "group": "2_manage@3"
         },

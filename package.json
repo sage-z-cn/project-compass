@@ -127,6 +127,10 @@
     "menus": {
       "commandPalette": [
         {
+          "command": "project-explorer.addCurrentToFavorites",
+          "when": "false"
+        },
+        {
           "command": "project-explorer.addGroup",
           "when": "false"
         },
@@ -196,14 +200,14 @@
           "group": "navigation@1"
         },
         {
-          "command": "project-explorer.collapseAll",
+          "command": "project-explorer.expandAll",
           "when": "view == project-explorer.favorites",
           "group": "navigation@2"
         },
         {
-          "command": "project-explorer.expandAll",
+          "command": "project-explorer.collapseAll",
           "when": "view == project-explorer.favorites",
-          "group": "navigation@2"
+          "group": "navigation@3"
         },
         {
           "command": "project-explorer.addCurrentToFavorites",

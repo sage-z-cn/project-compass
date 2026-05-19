@@ -121,10 +121,11 @@ export class FavoritesViewProvider extends BaseViewProvider {
     position: relative;
   }
   .tree-node:hover { background: var(--vscode-list-hoverBackground); }
-  .tree-node.active { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+  .tree-node.active { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
   .tree-node.selected { background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
   .tree-node.invalid { opacity: 0.5; }
   .tree-node.drag-over-inside { background: var(--vscode-list-focusHighlightForeground); outline: 1px solid var(--vscode-focusBorder); border-radius: 3px; }
+  .tree-node.selecting { background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
   .indent { flex-shrink: 0; position: relative; align-self: stretch; margin: -4px 0; z-index: 1; }
   .indent[data-width="16"] { width: 16px; }
   .indent[data-width="32"] { width: 32px; }
@@ -230,10 +231,25 @@ export class FavoritesViewProvider extends BaseViewProvider {
   .context-menu .menu-item:hover { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); }
   .context-menu .menu-item.disabled { opacity: 0.4; pointer-events: none; }
   .context-menu .separator { height: 1px; background: var(--vscode-menu-separatorBackground); margin: 2px 0; }
+  .selection-box {
+    display: none;
+    position: fixed;
+    border: 1px solid var(--vscode-focusBorder);
+    pointer-events: none;
+    z-index: 999;
+  }
+  .selection-box::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--vscode-focusBorder);
+    opacity: 0.1;
+  }
 </style>
 </head>
 <body>
 <div id="tree"></div>
+<div id="sel-box" class="selection-box"></div>
 <div id="ctx" class="context-menu"></div>
 <script nonce="${nonce}">
 const vscode = acquireVsCodeApi();
@@ -250,6 +266,9 @@ let lastDropTarget = null;
 let clickMode = "singleClick";
 let clickTimer = null;
 let pendingClickId = null;
+let selecting = false;
+let selStartX = 0, selStartY = 0;
+let selectionJustMade = false;
 
 const MENU_PROJECT = [
   { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))}, icon: "empty-window" },
@@ -440,6 +459,10 @@ document.addEventListener("contextmenu", (e) => {
 
 document.addEventListener("click", (e) => {
   hideMenu();
+  if (selectionJustMade) {
+    selectionJustMade = false;
+    return;
+  }
   if (!e.target.closest(".tree-node") && !e.target.closest(".context-menu")) {
     selectedIds.clear();
     focusedId = null;
@@ -447,7 +470,19 @@ document.addEventListener("click", (e) => {
     render();
   }
 });
-window.addEventListener("blur", () => { hideMenu(); });
+window.addEventListener("blur", () => {
+  hideMenu();
+  if (selecting) {
+    selecting = false;
+    selBox.style.display = "none";
+  }
+  selectedIds.clear();
+  focusedId = null;
+  lastClickedId = null;
+  render();
+});
+
+${BaseViewProvider.rubberBandScript("tree", ".tree-node")}
 
 function showMenu(x, y, type) {
   const menu = document.getElementById("ctx");

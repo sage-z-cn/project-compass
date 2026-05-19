@@ -84,9 +84,10 @@ export class RecentViewProvider extends BaseViewProvider {
     font-size: var(--vscode-font-size);
     color: var(--vscode-foreground);
     background: var(--vscode-sideBar-background);
-    padding: 4px 0;
+    padding: 0;
     user-select: none;
   }
+  #list { min-height: 100vh; }
   .item {
     display: flex;
     align-items: flex-start;
@@ -96,9 +97,10 @@ export class RecentViewProvider extends BaseViewProvider {
     overflow: hidden;
   }
   .item:hover { background: var(--vscode-list-hoverBackground); }
-  .item.active { background: var(--vscode-list-activeSelectionBackground); color: var(--vscode-list-activeSelectionForeground); }
+  .item.active { outline: 1px solid var(--vscode-focusBorder); outline-offset: -1px; background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
   .item.selected { background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
   .item.invalid { opacity: 0.5; }
+  .item.selecting { background: var(--vscode-list-inactiveSelectionBackground); color: var(--vscode-list-inactiveSelectionForeground); }
   .icon {
     flex-shrink: 0;
     width: 20px;
@@ -171,10 +173,25 @@ export class RecentViewProvider extends BaseViewProvider {
   .context-menu .menu-item:hover { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); }
   .context-menu .menu-item.disabled { opacity: 0.4; pointer-events: none; }
   .context-menu .separator { height: 1px; background: var(--vscode-menu-separatorBackground); margin: 2px 0; }
+  .selection-box {
+    display: none;
+    position: fixed;
+    border: 1px solid var(--vscode-focusBorder);
+    pointer-events: none;
+    z-index: 999;
+  }
+  .selection-box::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--vscode-focusBorder);
+    opacity: 0.1;
+  }
 </style>
 </head>
 <body>
 <div id="list"></div>
+<div id="sel-box" class="selection-box"></div>
 <div id="ctx" class="context-menu"></div>
 <script nonce="${nonce}">
 const vscode = acquireVsCodeApi();
@@ -186,6 +203,9 @@ let ctxTargetId = null;
 let clickMode = "singleClick";
 let clickTimer = null;
 let pendingClickId = null;
+let selecting = false;
+let selStartX = 0, selStartY = 0;
+let selectionJustMade = false;
 
 const MENU = {
   project: [
@@ -311,6 +331,10 @@ document.addEventListener("contextmenu", (e) => {
 
 document.addEventListener("click", (e) => {
   hideMenu();
+  if (selectionJustMade) {
+    selectionJustMade = false;
+    return;
+  }
   if (!e.target.closest(".item") && !e.target.closest(".context-menu")) {
     selectedIds.clear();
     focusedId = null;
@@ -318,7 +342,19 @@ document.addEventListener("click", (e) => {
     render();
   }
 });
-window.addEventListener("blur", () => { hideMenu(); });
+window.addEventListener("blur", () => {
+  hideMenu();
+  if (selecting) {
+    selecting = false;
+    selBox.style.display = "none";
+  }
+  selectedIds.clear();
+  focusedId = null;
+  lastClickedId = null;
+  render();
+});
+
+${BaseViewProvider.rubberBandScript("list", ".item")}
 
 function showMenu(x, y, type) {
   const menu = document.getElementById("ctx");

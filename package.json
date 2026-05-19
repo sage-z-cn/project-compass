@@ -50,7 +50,7 @@
       {
         "command": "project-explorer.addProject",
         "title": "%command.addProject%",
-        "icon": "$(root-folder-opened)"
+        "icon": "$(folder-opened)"
       },
       {
         "command": "project-explorer.gitClone",

@@ -212,17 +212,22 @@ export class FavoritesViewProvider extends BaseViewProvider {
     background: var(--vscode-menu-background);
     border: 1px solid var(--vscode-menu-border);
     border-radius: 4px;
-    padding: 4px 0;
-    min-width: 200px;
+    padding: 2px 0;
+    min-width: 140px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
   .context-menu .menu-item {
-    padding: 4px 24px;
+    padding: 2px 16px;
     cursor: pointer;
     white-space: nowrap;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
+  .context-menu .menu-item .codicon { font-size: 14px; }
   .context-menu .menu-item:hover { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); }
-  .context-menu .separator { height: 1px; background: var(--vscode-menu-separatorBackground); margin: 4px 0; }
+  .context-menu .separator { height: 1px; background: var(--vscode-menu-separatorBackground); margin: 2px 0; }
 </style>
 </head>
 <body>
@@ -243,16 +248,16 @@ let clickTimer = null;
 let pendingClickId = null;
 
 const MENU_PROJECT = [
-  { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))} },
-  { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))} },
-  { action: "revealInExplorer", label: ${JSON.stringify(vscode.l10n.t("Reveal in File Explorer"))} },
+  { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))}, icon: "empty-window" },
+  { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))}, icon: "window" },
+  { action: "revealInExplorer", label: ${JSON.stringify(vscode.l10n.t("Reveal in File Explorer"))}, icon: "file-directory" },
   { sep: true },
-  { action: "rename", label: ${JSON.stringify(vscode.l10n.t("Rename"))} },
-  { action: "removeFavorite", label: ${JSON.stringify(vscode.l10n.t("Remove from Favorites"))} },
+  { action: "rename", label: ${JSON.stringify(vscode.l10n.t("Rename"))}, icon: "edit" },
+  { action: "removeFavorite", label: ${JSON.stringify(vscode.l10n.t("Remove from Favorites"))}, icon: "close" },
 ];
 const MENU_GROUP = [
-  { action: "renameGroup", label: ${JSON.stringify(vscode.l10n.t("Rename Group"))} },
-  { action: "deleteGroup", label: ${JSON.stringify(vscode.l10n.t("Delete Group"))} },
+  { action: "renameGroup", label: ${JSON.stringify(vscode.l10n.t("Rename Group"))}, icon: "edit" },
+  { action: "deleteGroup", label: ${JSON.stringify(vscode.l10n.t("Delete Group"))}, icon: "trash" },
 ];
 
 window.addEventListener("message", (e) => {
@@ -366,22 +371,23 @@ document.getElementById("tree").addEventListener("click", (e) => {
 });
 
 // Context menu
-document.getElementById("tree").addEventListener("contextmenu", (e) => {
+document.addEventListener("contextmenu", (e) => {
   const node = e.target.closest(".tree-node");
-  if (!node) {return;}
+  if (!node) { e.preventDefault(); return; }
   e.preventDefault();
   ctxTarget = { id: node.dataset.id, type: node.dataset.type };
   showMenu(e.clientX, e.clientY, node.dataset.type === "group" ? "group" : "project");
 });
 
 document.addEventListener("click", () => { hideMenu(); });
+window.addEventListener("blur", () => { hideMenu(); });
 
 function showMenu(x, y, type) {
   const menu = document.getElementById("ctx");
   const items = type === "group" ? MENU_GROUP : MENU_PROJECT;
   menu.innerHTML = items.map(i =>
     i.sep ? '<div class="separator"></div>'
-    : '<div class="menu-item" data-action="' + i.action + '">' + esc(i.label) + '</div>'
+    : '<div class="menu-item" data-action="' + i.action + '"><i class="codicon codicon-' + i.icon + '"></i>' + esc(i.label) + '</div>'
   ).join("");
   menu.style.display = "block";
   const menuW = menu.offsetWidth;

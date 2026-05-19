@@ -151,17 +151,22 @@ export class RecentViewProvider extends BaseViewProvider {
     background: var(--vscode-menu-background);
     border: 1px solid var(--vscode-menu-border);
     border-radius: 4px;
-    padding: 4px 0;
-    min-width: 180px;
+    padding: 2px 0;
+    min-width: 140px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
   .context-menu .menu-item {
-    padding: 4px 24px;
+    padding: 2px 16px;
     cursor: pointer;
     white-space: nowrap;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
+  .context-menu .menu-item .codicon { font-size: 14px; }
   .context-menu .menu-item:hover { background: var(--vscode-menu-selectionBackground); color: var(--vscode-menu-selectionForeground); }
-  .context-menu .separator { height: 1px; background: var(--vscode-menu-separatorBackground); margin: 4px 0; }
+  .context-menu .separator { height: 1px; background: var(--vscode-menu-separatorBackground); margin: 2px 0; }
 </style>
 </head>
 <body>
@@ -178,13 +183,13 @@ let pendingClickId = null;
 
 const MENU = {
   project: [
-    { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))} },
-    { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))} },
-    { action: "revealInExplorer", label: ${JSON.stringify(vscode.l10n.t("Reveal in File Explorer"))} },
+    { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))}, icon: "empty-window" },
+    { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))}, icon: "window" },
+    { action: "revealInExplorer", label: ${JSON.stringify(vscode.l10n.t("Reveal in File Explorer"))}, icon: "file-directory" },
     { sep: true },
-    { action: "addFavorite", label: ${JSON.stringify(vscode.l10n.t("Add to Favorites"))} },
-    { action: "rename", label: ${JSON.stringify(vscode.l10n.t("Rename"))} },
-    { action: "remove", label: ${JSON.stringify(vscode.l10n.t("Remove"))} },
+    { action: "addFavorite", label: ${JSON.stringify(vscode.l10n.t("Add to Favorites"))}, icon: "star-empty" },
+    { action: "rename", label: ${JSON.stringify(vscode.l10n.t("Rename"))}, icon: "edit" },
+    { action: "remove", label: ${JSON.stringify(vscode.l10n.t("Remove"))}, icon: "trash" },
   ],
 };
 
@@ -237,22 +242,23 @@ document.getElementById("list").addEventListener("click", (e) => {
   }
 });
 
-document.getElementById("list").addEventListener("contextmenu", (e) => {
+document.addEventListener("contextmenu", (e) => {
   const el = e.target.closest(".item");
-  if (!el) {return;}
+  if (!el) { e.preventDefault(); return; }
   e.preventDefault();
   ctxTargetId = el.dataset.id;
   showMenu(e.clientX, e.clientY, "project");
 });
 
 document.addEventListener("click", () => { hideMenu(); });
+window.addEventListener("blur", () => { hideMenu(); });
 
 function showMenu(x, y, type) {
   const menu = document.getElementById("ctx");
   const items = MENU[type] || [];
   menu.innerHTML = items.map(i =>
     i.sep ? '<div class="separator"></div>'
-    : '<div class="menu-item" data-action="' + i.action + '">' + esc(i.label) + '</div>'
+    : '<div class="menu-item" data-action="' + i.action + '"><i class="codicon codicon-' + i.icon + '"></i>' + esc(i.label) + '</div>'
   ).join("");
   menu.style.display = "block";
   const menuW = menu.offsetWidth;

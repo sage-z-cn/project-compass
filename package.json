@@ -288,6 +288,11 @@
         "command": "project-explorer.openProject",
         "key": "alt+o",
         "mac": "alt+o"
+      },
+      {
+        "command": "workbench.view.extension.project-explorer",
+        "key": "ctrl+alt+o",
+        "mac": "ctrl+alt+o"
       }
     ],
     "configuration": {

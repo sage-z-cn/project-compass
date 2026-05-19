@@ -34,8 +34,14 @@ export function registerProjectCommands(
   register("renameProject", renameProjectCmd);
   register("removeProject", removeProjectCmd);
   async function openProjectCmd() {
-    const projects = projectService.getAll().filter((p) => p.isValid);
-    await pickAndOpenProject(projects);
+    const recentMap = new Map<string, ProjectItem>();
+    for (const p of projectService.getAll()) {
+      if (p.isValid) recentMap.set(p.path, p);
+    }
+    for (const p of favoriteService.getAll()) {
+      if (p.isValid) recentMap.set(p.path, p);
+    }
+    await pickAndOpenProject([...recentMap.values()]);
   }
 
   async function addProjectCmd() {

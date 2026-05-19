@@ -2,7 +2,8 @@
   "name": "project-explorer",
   "displayName": "%viewContainer.title%",
   "description": "Auto-record projects, one-click switch. / 自动记录，一键即达。",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
   "icon": "resources/icon.png",
   "engines": {
     "vscode": "^1.120.0"
@@ -300,7 +301,7 @@
       "properties": {
         "projectExplorer.recentProjectsLimit": {
           "type": "number",
-          "default": 20,
+          "default": 50,
           "description": "%config.recentProjectsLimit%"
         },
         "projectExplorer.openProjectMode": {

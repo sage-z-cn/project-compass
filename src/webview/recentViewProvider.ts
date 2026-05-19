@@ -40,7 +40,7 @@ export class RecentViewProvider extends BaseViewProvider {
 
   refresh() {
     const config = vscode.workspace.getConfiguration("projectExplorer");
-    const limit = config.get<number>("recentProjectsLimit", 20);
+    const limit = config.get<number>("recentProjectsLimit", 50);
     const clickMode = this.resolveClickMode();
     const items = this.projectService.getRecent(limit).map(
       (p): RecentItemDto => {

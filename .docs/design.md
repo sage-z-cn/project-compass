@@ -63,7 +63,7 @@ Sidebar 中的主 TreeView，展示所有项目和分组。
 - 虚拟视图，不通过 `groupId` 关联，而是按 `lastOpenedAt` 降序取前 N 条自动生成
 - 不受拖拽影响，始终反映最近打开的项目
 - 默认展开，显示在列表最顶部
-- 项目数量受配置项 `projectExplorer.recentProjectsLimit` 限制（默认 20）
+- 项目数量受配置项 `projectExplorer.recentProjectsLimit` 限制（默认 50）
 - 超过数量限制时自动隐藏最旧的条目
 - 可通过右键菜单"隐藏"该分组，不可删除
 - 隐藏后可通过设置 `projectExplorer.showRecentGroup` 重新显示
@@ -134,7 +134,7 @@ Sidebar 中的主 TreeView，展示所有项目和分组。
 
 | 配置项 | 类型 | 默认值 | 说明 |
 |--------|------|--------|------|
-| `projectExplorer.recentProjectsLimit` | `number` | `20` | 最近项目分组显示的最大项目数 |
+| `projectExplorer.recentProjectsLimit` | `number` | `50` | 最近项目分组显示的最大项目数 |
 | `projectExplorer.showRecentGroup` | `boolean` | `true` | 是否显示"最近项目"分组 |
 | `projectExplorer.openProjectMode` | `enum` | `"ask"` | 打开项目方式：`"ask"` 每次询问 / `"currentWindow"` 始终当前窗口 / `"newWindow"` 始终新窗口 |
 

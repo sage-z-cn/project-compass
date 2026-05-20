@@ -4,6 +4,9 @@ All notable changes to the "project-atlas" extension will be documented in this 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+#### 1.2.0
+- **资源管理器定位**: 添加"定位当前文件"按钮，可在文件管理器视图标题栏中快速定位当前打开的文件
+
 #### 1.1.0
 - **操作确认机制**: 删除项目、分组、取消收藏前弹出确认对话框，支持「不再提醒」选项并持久化配置
 - **收藏快捷入口**: 最近项目列表添加「收藏」快捷按钮，无需右键即可收藏

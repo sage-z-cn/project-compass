@@ -25,33 +25,19 @@
 
 ## Features
 
-✅ **Auto-tracking** — Every project you open is recorded automatically with timestamps. No manual setup needed.
+✅ **Auto-tracking** — Every project you open is recorded automatically. No manual setup needed.
 
-✅ **One-click Switch** — Open any project directly from the sidebar. No more digging through file dialogs.
+✅ **Quick Access** — Open any project from the sidebar with configurable click behavior (single/double click) and window preference. Keyboard shortcuts for instant access.
 
-✅ **Favorites** — Star projects for quick access. Add the current workspace to favorites with a single click.
+✅ **Favorites & Groups** — Star projects for quick access and organize them into named groups with expand/collapse.
 
-✅ **Groups** — Organize favorites into named groups. Expand or collapse all groups at once to keep things tidy.
+✅ **Git Clone** — Clone repositories directly into your workspace from the sidebar.
 
-✅ **Git Clone** — Clone repositories directly into your workspace from the sidebar, without leaving VS Code.
+✅ **Project Type Detection** — Automatically identifies 16+ project types and displays matching devicon icons.
 
-✅ **Project Type Detection** — Automatically detects 16+ project types (Java, Python, JavaScript, TypeScript, React, Vue, Electron, Go, Rust, C++, C#, PHP, Ruby, Swift, Kotlin, Dart) and displays matching devicon icons.
-
-✅ **Flexible Open Mode** — Choose between single click, double click, or follow your IDE's default setting.
-
-✅ **Open in New/Current Window** — Pick where a project opens on each click, or set a default behavior in settings.
-
-✅ **Clean Invalid Projects** — Remove projects whose folders no longer exist on disk with one click.
-
-✅ **Context Menu** — Right-click any project for quick actions: open, rename, remove, add/remove favorites, reveal in file explorer.
-
-✅ **Rename Projects** — Set a custom display name for any project. The actual folder stays unchanged.
-
-✅ **Keyboard Shortcuts** — Press `Alt+O` to open the project picker, `Ctrl+Alt+O` to focus the sidebar.
+✅ **Project Management** — Rename display names, clean up invalid entries, reveal in file explorer, and right-click for quick actions.
 
 ✅ **Reveal Active File** — Adds a button to the built-in file explorer's view title bar to locate the currently open file in the tree (can be toggled in settings).
-
-✅ **i18n** — Full localization support for English and Chinese interfaces.
 
 ## Usage
 

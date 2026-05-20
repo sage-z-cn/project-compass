@@ -189,6 +189,45 @@ export class FavoritesViewProvider extends BaseViewProvider {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .path-row {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .path-row .tree-path {
+    flex: 1;
+    min-width: 0;
+  }
+  .hover-actions {
+    visibility: hidden;
+    flex-shrink: 0;
+    display: flex;
+    gap: 2px;
+    margin-left: auto;
+  }
+  .tree-node:hover .hover-actions {
+    visibility: visible;
+  }
+  .hover-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 2px;
+    color: var(--vscode-descriptionForeground);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    width: 20px;
+  }
+  .hover-actions button:hover {
+    color: var(--vscode-foreground);
+    background: var(--vscode-toolbar-hoverBackground);
+  }
+  .hover-actions .codicon {
+    font-size: 13px;
+  }
   .children { overflow: hidden; }
   .children.collapsed { display: none; }
   .drop-indicator {
@@ -271,8 +310,8 @@ let selStartX = 0, selStartY = 0;
 let selectionJustMade = false;
 
 const MENU_PROJECT = [
-  { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))}, icon: "empty-window" },
-  { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))}, icon: "window" },
+  { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))}, icon: "link-external" },
+  { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))}, icon: "open-in-product" },
   { action: "revealInExplorer", label: ${JSON.stringify(vscode.l10n.t("Reveal in File Explorer"))}, icon: "file-directory" },
   { sep: true },
   { action: "rename", label: ${JSON.stringify(vscode.l10n.t("Rename"))}, icon: "edit" },
@@ -354,7 +393,12 @@ function renderNodes(nodes, depth) {
     html += '<span class="icon ' + iconClass + '"><i class="' + iconContent + '"></i></span>';
     html += '<div class="tree-content"><span class="label">' + esc(node.name) + '</span>';
     if (!isGroup && node.path) {
-      html += '<span class="tree-path">' + esc(node.path) + '</span>';
+      html += '<div class="path-row"><span class="tree-path">' + esc(node.path) + '</span>';
+      html += '<div class="hover-actions">';
+      html += '<button data-action="openInNewWindow" title="${vscode.l10n.t("Open in New Window")}"><i class="codicon codicon-link-external"></i></button>';
+      html += '<button data-action="openInCurrentWindow" title="${vscode.l10n.t("Open in Current Window")}"><i class="codicon codicon-open-in-product"></i></button>';
+      html += '<button data-action="removeFavorite" title="${vscode.l10n.t("Remove from Favorites")}"><i class="codicon codicon-trash"></i></button>';
+      html += '</div></div>';
     }
     html += '</div></div>';
 
@@ -375,6 +419,16 @@ function getVisibleNodeIds() {
 }
 
 document.getElementById("tree").addEventListener("click", (e) => {
+  const actionBtn = e.target.closest(".hover-actions button");
+  if (actionBtn) {
+    const node = actionBtn.closest(".tree-node");
+    if (node) {
+      const id = node.dataset.id;
+      const ids = selectedIds.size > 0 && selectedIds.has(id) ? [...selectedIds] : [id];
+      vscode.postMessage({ type: "contextAction", id: id, ids: ids, itemType: node.dataset.type, action: actionBtn.dataset.action });
+    }
+    return;
+  }
   const node = e.target.closest(".tree-node");
   if (!node) {return;}
   const id = node.dataset.id;

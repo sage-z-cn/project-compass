@@ -144,6 +144,45 @@ export class RecentViewProvider extends BaseViewProvider {
     margin-left: auto;
     text-align: right;
   }
+  .path-row {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .path-row .path {
+    flex: 1;
+    min-width: 0;
+  }
+  .hover-actions {
+    visibility: hidden;
+    flex-shrink: 0;
+    display: flex;
+    gap: 2px;
+    margin-left: auto;
+  }
+  .item:hover .hover-actions {
+    visibility: visible;
+  }
+  .hover-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 2px;
+    color: var(--vscode-descriptionForeground);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 18px;
+    width: 20px;
+  }
+  .hover-actions button:hover {
+    color: var(--vscode-foreground);
+    background: var(--vscode-toolbar-hoverBackground);
+  }
+  .hover-actions .codicon {
+    font-size: 13px;
+  }
   .empty {
     padding: 8px 16px;
     color: var(--vscode-descriptionForeground);
@@ -209,8 +248,8 @@ let selectionJustMade = false;
 
 const MENU = {
   project: [
-    { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))}, icon: "empty-window" },
-    { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))}, icon: "window" },
+    { action: "openInNewWindow", label: ${JSON.stringify(vscode.l10n.t("Open in New Window"))}, icon: "link-external" },
+    { action: "openInCurrentWindow", label: ${JSON.stringify(vscode.l10n.t("Open in Current Window"))}, icon: "open-in-product" },
     { action: "revealInExplorer", label: ${JSON.stringify(vscode.l10n.t("Reveal in File Explorer"))}, icon: "file-directory" },
     { sep: true },
     { action: "addFavorite", label: ${JSON.stringify(vscode.l10n.t("Add to Favorites"))}, icon: "star-empty" },
@@ -253,13 +292,26 @@ function render() {
     '<span class="' + iconStyle + '"><i class="' + iconClass + '"></i></span>' +
     '<div class="content"><div class="label-row"><span class="label">' + esc(p.name) + '</span>' +
     '<span class="desc">' + esc(p.timeLabel) + '</span></div>' +
-    '<span class="path">' + esc(p.path) + '</span></div></div>';
+    '<div class="path-row"><span class="path">' + esc(p.path) + '</span>' +
+    '<div class="hover-actions">' +
+    '<button data-action="openInNewWindow" title="${vscode.l10n.t("Open in New Window")}"><i class="codicon codicon-link-external"></i></button>' +
+    '<button data-action="openInCurrentWindow" title="${vscode.l10n.t("Open in Current Window")}"><i class="codicon codicon-open-in-product"></i></button>' +
+    '<button data-action="remove" title="${vscode.l10n.t("Remove")}"><i class="codicon codicon-trash"></i></button>' +
+    '</div></div></div></div>';
   }).join("");
 }
 
 function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
 
 document.getElementById("list").addEventListener("click", (e) => {
+  const actionBtn = e.target.closest(".hover-actions button");
+  if (actionBtn) {
+    const item = actionBtn.closest(".item");
+    if (item) {
+      vscode.postMessage({ type: "contextAction", id: item.dataset.id, ids: [item.dataset.id], action: actionBtn.dataset.action });
+    }
+    return;
+  }
   const el = e.target.closest(".item");
   if (!el) {return;}
   const id = el.dataset.id;

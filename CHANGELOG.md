@@ -4,6 +4,9 @@ All notable changes to the "project-atlas" extension will be documented in this 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+#### 1.2.1
+- 修复打包配置，重新发布
+
 #### 1.2.0
 - **资源管理器定位**: 添加"定位当前文件"按钮，可在文件管理器视图标题栏中快速定位当前打开的文件
 

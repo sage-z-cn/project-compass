@@ -32,7 +32,7 @@
 > Open any project from the sidebar with configurable click behavior (single/double click) and window preference. Keyboard shortcuts for instant access.
 
 **Favorites & Groups**
-> Star projects for quick access and organize them into named groups with expand/collapse.
+> Star projects for quick access and organize them into named groups with expand/collapse. Drag to reorder favorites.
 
 **Git Clone**
 > Clone repositories directly into your workspace from the sidebar.
@@ -52,7 +52,7 @@ The extension adds two views to the VS Code sidebar under the **Project Atlas** 
 
 **Recent** — Shows recently opened projects, sorted by last access time. Use the toolbar to add a project manually or clone a Git repository. The overflow menu lets you clean up invalid entries and open settings.
 
-**Favorites** — Displays starred projects, optionally organized into groups. Use the toolbar to add the current workspace, create groups, and expand or collapse all groups.
+**Favorites** — Displays starred projects, optionally organized into groups. Use the toolbar to add the current workspace, create groups, and expand or collapse all groups. Drag to reorder items.
 
 Click any project to open it. Right-click for more options like renaming, toggling favorites, or opening in a new window.
 

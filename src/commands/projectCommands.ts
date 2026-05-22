@@ -7,9 +7,33 @@ import { GroupService } from "../services/groupService";
 import { resolveOpenMode, openFolder, openInOS } from "../utils/opener";
 import { normalizePath } from "../utils/validator";
 import { confirmDelete } from "../utils/confirm";
-import type { ProjectItem } from "../models/project";
+import type { ProjectItem, ProjectType } from "../models/project";
 
 type TreeNode = { type: string; item: ProjectItem };
+
+interface QuickPickItem extends vscode.QuickPickItem {
+  project: ProjectItem | null;
+}
+
+const PROJECT_TYPE_ICON: Record<ProjectType, string> = {
+  electron: "electron",
+  react: "symbol-method",
+  vue: "symbol-method",
+  typescript: "symbol-method",
+  javascript: "symbol-method",
+  java: "coffee",
+  python: "python",
+  cpp: "symbol-method",
+  csharp: "symbol-method",
+  go: "symbol-method",
+  rust: "symbol-method",
+  php: "symbol-method",
+  ruby: "symbol-method",
+  swift: "symbol-method",
+  kotlin: "symbol-method",
+  dart: "symbol-method",
+  unknown: "folder",
+};
 
 const GIT_URL_RE = /^(https?|git|ssh|file):\/\/|^[\w-]+@[\w.-]+:/;
 
@@ -206,17 +230,42 @@ export function registerProjectCommands(
       return;
     }
 
-    const picks = projects.map((p) => ({
-      label: p.name,
+    const addNewPick: QuickPickItem = {
+      label: `$(folder-opened) ${vscode.l10n.t("Open New Project...")}`,
+      alwaysShow: true,
+      project: null as ProjectItem | null,
+    };
+
+    const projectPicks: QuickPickItem[] = projects.map((p) => ({
+      label: `$(${PROJECT_TYPE_ICON[p.projectType ?? "unknown"]}) ${p.name}`,
       description: p.path,
       project: p,
     }));
 
-    const selected = await vscode.window.showQuickPick(picks, {
-      placeHolder: vscode.l10n.t("Select a project to open..."),
+    const qp = vscode.window.createQuickPick<QuickPickItem>();
+    qp.placeholder = vscode.l10n.t("Select a project to open...");
+    qp.items = [addNewPick, ...projectPicks];
+    qp.matchOnDescription = true;
+
+    qp.onDidChangeValue((value) => {
+      qp.items = value ? projectPicks : [addNewPick, ...projectPicks];
     });
 
+    const selected = await new Promise<QuickPickItem | undefined>(
+      (resolve) => {
+        qp.onDidAccept(() => resolve(qp.selectedItems[0]));
+        qp.onDidHide(() => resolve(undefined));
+        qp.show();
+      }
+    );
+    qp.dispose();
+
     if (!selected) {return;}
+
+    if (!selected.project) {
+      await vscode.commands.executeCommand("project-atlas.addProject");
+      return;
+    }
 
     const newWindow = await resolveOpenMode();
     await openFolder(vscode.Uri.file(selected.project.path), newWindow);
